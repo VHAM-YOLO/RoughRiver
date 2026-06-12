@@ -1,0 +1,222 @@
+/* ============================================================
+   Rough River Retreat — styles.css
+   Palette: lake teal, morning mist, golden hour, deep ink
+   Type: Bitter (display, lodge-sign slab) + Karla (body)
+   ============================================================ */
+
+:root {
+  --lake:      #1f4e4a;   /* deep lake teal */
+  --lake-deep: #143430;   /* dusk water */
+  --mist:      #eef3f2;   /* morning mist */
+  --paper:     #fbfcfb;   /* near-white */
+  --gold:      #d9a441;   /* golden hour */
+  --ink:       #182523;   /* deep ink */
+  --ink-soft:  #46605c;   /* softened ink for secondary text */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation: none !important; transition: none !important; }
+}
+
+body {
+  font-family: 'Karla', system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  line-height: 1.6;
+}
+
+h1, h2, h3 { font-family: 'Bitter', Georgia, serif; line-height: 1.15; }
+
+img { max-width: 100%; display: block; }
+
+a { color: var(--lake); }
+a:focus-visible, button:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* ---------- Header ---------- */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--paper);
+  border-bottom: 1px solid #dde6e4;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.85rem clamp(1rem, 4vw, 3rem);
+}
+.site-header .brand {
+  font-family: 'Bitter', serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.site-header nav a {
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-left: 1.5rem;
+  color: var(--ink-soft);
+}
+.site-header nav a:hover { color: var(--lake); }
+
+/* ---------- Hero ---------- */
+.hero { position: relative; isolation: isolate; color: #fff; }
+.hero img.hero-photo {
+  width: 100%;
+  height: min(78vh, 620px);
+  object-fit: cover;
+}
+.hero .scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(16,33,31,0.15) 30%, rgba(16,33,31,0.72) 100%);
+}
+.hero .hero-copy {
+  position: absolute; left: 0; right: 0; bottom: clamp(2.5rem, 8vh, 5rem);
+  padding: 0 clamp(1.25rem, 6vw, 4rem);
+  max-width: 56rem;
+}
+.hero h1 {
+  font-size: clamp(2rem, 5.5vw, 3.6rem);
+  font-weight: 800;
+  text-shadow: 0 2px 14px rgba(0,0,0,0.35);
+}
+.hero p {
+  margin-top: 0.75rem;
+  font-size: clamp(1rem, 2.2vw, 1.25rem);
+  max-width: 38rem;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.45);
+}
+.btn {
+  display: inline-block;
+  margin-top: 1.4rem;
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  padding: 0.85rem 1.8rem;
+  border-radius: 6px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.25); }
+
+/* ---------- Wave divider (signature) ---------- */
+.wave { display: block; width: 100%; height: 54px; }
+.wave--mist  { color: var(--mist); }
+.wave--lake  { color: var(--lake); }
+.wave--paper { color: var(--paper); }
+
+/* ---------- Sections ---------- */
+section { padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.25rem, 6vw, 4rem); }
+.section-mist { background: var(--mist); }
+.section-lake { background: var(--lake); color: #f2f7f6; }
+.section-lake a { color: #ffe2a6; }
+.kicker {
+  font-size: 0.8rem; font-weight: 800; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--gold);
+}
+.section-title { font-size: clamp(1.6rem, 3.4vw, 2.3rem); margin: 0.3rem 0 1.2rem; }
+
+/* Discover grid */
+.discover-grid {
+  display: grid; gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+.discover-card { position: relative; border-radius: 10px; overflow: hidden; }
+.discover-card img { height: 320px; width: 100%; object-fit: cover; }
+.discover-card span {
+  position: absolute; left: 1rem; bottom: 0.9rem;
+  font-family: 'Bitter', serif; font-weight: 800; font-size: 1.3rem; color: #fff;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+}
+.lede { max-width: 46rem; font-size: 1.08rem; color: var(--ink-soft); }
+.section-lake .lede { color: #d4e4e1; }
+
+/* Sleeping arrangements */
+.beds {
+  margin-top: 1.5rem;
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.bed-card {
+  background: var(--paper);
+  border: 1px solid #d8e3e1;
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+}
+.bed-card h3 { font-size: 1rem; color: var(--lake); margin-bottom: 0.2rem; }
+.bed-card p { font-weight: 700; }
+
+/* Booking */
+.calendar-wrap {
+  position: relative;
+  padding-bottom: min(80%, 600px);
+  height: 0; overflow: hidden;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.22);
+  margin: 1.5rem 0;
+}
+.calendar-wrap iframe {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; border: 0;
+}
+.pay-links { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1rem; }
+.pay-links a {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.35);
+  color: #fff; text-decoration: none; font-weight: 700;
+  padding: 0.65rem 1.2rem; border-radius: 6px;
+}
+.pay-links a:hover { background: rgba(255,255,255,0.22); }
+.pay-links a.book { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+
+/* Local & day trips */
+.fishin {
+  display: grid; gap: 2rem; align-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+.fishin img { border-radius: 10px; }
+.fishin ul { list-style: none; margin-top: 1rem; }
+.fishin li { padding: 0.45rem 0; border-bottom: 1px dashed #c8d6d3; }
+.fishin li strong { color: var(--lake); }
+
+.trips {
+  display: grid; gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  margin-top: 1.5rem;
+}
+.trip-card {
+  background: var(--paper);
+  border: 1px solid #d8e3e1;
+  border-radius: 10px;
+  padding: 1.4rem;
+}
+.trip-card h3 { font-size: 1.1rem; margin-bottom: 0.15rem; }
+.trip-card .dist { font-size: 0.85rem; font-weight: 700; color: var(--gold); }
+.trip-card p { margin-top: 0.6rem; color: var(--ink-soft); font-size: 0.97rem; }
+.trip-card a { font-weight: 700; display: inline-block; margin-top: 0.6rem; }
+
+/* Photo grid (photos.html) */
+.photo-grid {
+  display: grid; gap: 0.8rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+.photo-grid a { border-radius: 8px; overflow: hidden; display: block; }
+.photo-grid img {
+  width: 100%; height: 240px; object-fit: cover;
+  transition: transform 0.25s ease;
+}
+.photo-grid a:hover img { transform: scale(1.04); }
+
+/* Footer */
+footer {
+  background: var(--lake-deep); color: #bcd2ce;
+  text-align: center; padding: 2rem 1rem; font-size: 0.9rem;
+}
+footer a { color: #ffe2a6; }
