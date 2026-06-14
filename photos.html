@@ -9,6 +9,54 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@700;800&family=Karla:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<style>
+  /* ---- Lightbox ---- */
+  .photo-grid a { cursor: zoom-in; }
+  .lightbox {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(22, 20, 17, 0.94);
+    display: none; align-items: center; justify-content: center;
+    touch-action: pan-y; -webkit-user-select: none; user-select: none;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: 92vw; max-height: 86vh;
+    object-fit: contain; border-radius: 4px;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.55);
+    -webkit-user-drag: none;
+  }
+  .lb-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 52px; height: 52px; border: none; border-radius: 50%;
+    background: rgba(0, 0, 0, 0.40); color: #fff;
+    font-size: 30px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s ease;
+  }
+  .lb-btn:hover { background: rgba(0, 0, 0, 0.72); }
+  .lb-prev { left: 14px; }
+  .lb-next { right: 14px; }
+  .lb-close {
+    position: absolute; top: 14px; right: 16px;
+    width: 44px; height: 44px; border: none; border-radius: 50%;
+    background: rgba(0, 0, 0, 0.40); color: #fff;
+    font-size: 26px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s ease;
+  }
+  .lb-close:hover { background: rgba(0, 0, 0, 0.72); }
+  .lb-counter {
+    position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+    color: #fff; font-family: "Karla", sans-serif; font-size: 15px;
+    letter-spacing: 0.04em; background: rgba(0, 0, 0, 0.40);
+    padding: 5px 14px; border-radius: 999px;
+  }
+  @media (max-width: 600px) {
+    .lb-btn { width: 44px; height: 44px; font-size: 24px; }
+    .lb-prev { left: 6px; }
+    .lb-next { right: 6px; }
+  }
+</style>
 </head>
 <body>
 
@@ -65,6 +113,105 @@
   <p>Rough River Retreat · Rough River Lake, Kentucky</p>
   <p><a href="mailto:yourfavoritelakehouse@gmail.com">yourfavoritelakehouse@gmail.com</a></p>
 </footer>
+
+<!-- ---- Lightbox markup ---- -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous photo">&#10094;</button>
+  <img id="lbImg" src="" alt="">
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next photo">&#10095;</button>
+  <div class="lb-counter" id="lbCounter"></div>
+</div>
+
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('.photo-grid a'));
+  if (!links.length) return;
+
+  var photos = links.map(function (a) {
+    return { href: a.getAttribute('href'), alt: a.querySelector('img') ? a.querySelector('img').alt : '' };
+  });
+
+  var box = document.getElementById('lightbox');
+  var img = document.getElementById('lbImg');
+  var counter = document.getElementById('lbCounter');
+  var current = 0;
+
+  function preload(i) {
+    if (i < 0 || i >= photos.length) return;
+    var p = new Image();
+    p.src = photos[i].href;
+  }
+
+  function show(i) {
+    current = (i + photos.length) % photos.length;
+    img.src = photos[current].href;
+    img.alt = photos[current].alt;
+    counter.textContent = (current + 1) + ' / ' + photos.length;
+    preload(current + 1);
+    preload(current - 1);
+  }
+
+  function open(i) {
+    show(i);
+    box.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    box.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  // Open on thumbnail click
+  links.forEach(function (a, i) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      open(i);
+    });
+  });
+
+  // Controls
+  document.getElementById('lbClose').addEventListener('click', close);
+  document.getElementById('lbNext').addEventListener('click', function (e) { e.stopPropagation(); next(); });
+  document.getElementById('lbPrev').addEventListener('click', function (e) { e.stopPropagation(); prev(); });
+
+  // Click backdrop (not the image) to close
+  box.addEventListener('click', function (e) {
+    if (e.target === box) close();
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', function (e) {
+    if (!box.classList.contains('open')) return;
+    if (e.key === 'ArrowRight') next();
+    else if (e.key === 'ArrowLeft') prev();
+    else if (e.key === 'Escape') close();
+  });
+
+  // Swipe
+  var startX = 0, startY = 0, tracking = false;
+  box.addEventListener('touchstart', function (e) {
+    if (e.touches.length !== 1) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    tracking = true;
+  }, { passive: true });
+
+  box.addEventListener('touchend', function (e) {
+    if (!tracking) return;
+    tracking = false;
+    var dx = e.changedTouches[0].clientX - startX;
+    var dy = e.changedTouches[0].clientY - startY;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0) next(); else prev();
+    }
+  }, { passive: true });
+})();
+</script>
 
 </body>
 </html>
